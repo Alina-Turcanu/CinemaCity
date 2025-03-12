@@ -1,9 +1,8 @@
 package com.example.CinemaCity.Entities;
 
 import jakarta.persistence.*;
-
+import java.util.ArrayList;
 import java.util.List;
-
 @Entity
 @Table(name="users")
 public class User {
@@ -12,19 +11,39 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String username;
 
     private String email;
+
+    private String password;
 
     @OneToMany(mappedBy = "user")
     private List<Ticket> tickets;
 
 
+    @ManyToMany
+    @JoinTable(
+            name="user_role",
+            joinColumns= @JoinColumn(name="user_id"),
+            inverseJoinColumns = @JoinColumn(name="role_id")
+    )
+
+    private List<Role> roles;
+
+    public List<Role> getRoles() {
+        if(this.roles==null){
+            roles = new ArrayList<>();
+        }
+        return roles;
+    }
+
+
     public User (){
     }
-    public User(Long id, String name) {
+    public User(Long id, String username,String password) {
         this.id = id;
-        this.name = name;
+        this.username = username;
+        this.password=password;
     }
 
     public Long getId() {
@@ -35,12 +54,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -57,5 +76,13 @@ public class User {
 
     public void setTickets(List<Ticket> tickets) {
         this.tickets = tickets;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

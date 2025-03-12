@@ -1,19 +1,23 @@
 package com.example.CinemaCity.Services;
 
 
+import com.example.CinemaCity.Dtos.AuthRequestDTO;
 import com.example.CinemaCity.Dtos.SeatResponseDTO;
 import com.example.CinemaCity.Dtos.UserRequestDTO;
 import com.example.CinemaCity.Dtos.UserResponseDTO;
-import com.example.CinemaCity.Entities.CinemaHall;
-import com.example.CinemaCity.Entities.Movie;
-import com.example.CinemaCity.Entities.Seat;
-import com.example.CinemaCity.Entities.User;
+import com.example.CinemaCity.Entities.*;
 import com.example.CinemaCity.Exceptions.ResourceNotFoundException;
 import com.example.CinemaCity.Repositories.MovieRepository;
+import com.example.CinemaCity.Repositories.RoleRepository;
 import com.example.CinemaCity.Repositories.TicketRepository;
 import com.example.CinemaCity.Repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,18 +30,62 @@ public class UserService {
     MovieRepository movieRepository;
     TicketRepository ticketRepository;
 
+    private PasswordEncoder passwordEncoder;
+
+    private RoleRepository roleRepository;
+
+    private AuthenticationManager authenticationManager;
+
+    private UserDetailsServiceImpl userDetailsService;
+
+    private JwtTokenService jwtTokenService;
 
     @Autowired
-    public UserService(UserRepository userRepository, MovieRepository movieRepository, TicketRepository ticketRepository) {
+    public UserService(UserRepository userRepository, MovieRepository movieRepository, TicketRepository ticketRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, AuthenticationManager authenticationManager, UserDetailsServiceImpl userDetailsService, JwtTokenService jwtTokenService) {
         this.userRepository = userRepository;
         this.movieRepository = movieRepository;
         this.ticketRepository = ticketRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+        this.jwtTokenService = jwtTokenService;
     }
+
+    public User register (AuthRequestDTO authRequestDTO){
+
+        User user = new User();
+        user.setUsername(authRequestDTO.getUsername());
+        user.setPassword(passwordEncoder.encode(authRequestDTO.getPassword()));
+        Role role = roleRepository.findByRoleType(RoleType.ROLE_USER);
+        user.getRoles().add(role);
+        role.getUsers().add(user);
+        User savedUser=userRepository.save(user);
+        return savedUser;
+
+    }
+
+    public String authenticate (AuthRequestDTO authRequestDTO){
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword())
+        );
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(authRequestDTO.getUsername());
+        String token = jwtTokenService.generateToken(userDetails);
+        return token;
+    }
+
+    public User findLoggedInUser(){
+        String usernameLoggedIn = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        return  userRepository.findByUsername(usernameLoggedIn).orElseThrow(()->new ResourceNotFoundException("user not found"));
+    }
+
+
 
     @Transactional
     public UserResponseDTO addUser(UserRequestDTO userRequestDTO) {
         User user = new User();
-        user.setName(userRequestDTO.getName());
+        user.setUsername(userRequestDTO.getName());
         user.setEmail(userRequestDTO.getEmail());
         User savedUser = userRepository.save(user);
         return mapFromUserToUserResponseDTO(savedUser);
@@ -48,7 +96,7 @@ public class UserService {
     public UserResponseDTO mapFromUserToUserResponseDTO(User user) {
         UserResponseDTO userResponseDTO = new UserResponseDTO();
         userResponseDTO.setId(user.getId());
-        userResponseDTO.setName(user.getName());
+        userResponseDTO.setName(user.getUsername());
         userResponseDTO.setEmail(user.getEmail());
         return userResponseDTO;
     }
@@ -67,7 +115,7 @@ public class UserService {
 
         return allSeats.stream()
                 .filter(seat -> !occupiedSeats.contains(seat))
-                .map(seat -> new SeatResponseDTO(seat.getId(), seat.getSeatRowNumber(), seat.getSeatColumnNumber(), seat.getCinemaHall().getId()))
+                .map(seat -> new SeatResponseDTO(seat.getSeatRowNumber(), seat.getSeatColumnNumber()))
                 .collect(Collectors.toList());
     }
 }

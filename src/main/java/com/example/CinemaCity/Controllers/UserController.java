@@ -2,6 +2,7 @@ package com.example.CinemaCity.Controllers;
 
 import com.example.CinemaCity.Dtos.*;
 import com.example.CinemaCity.Entities.Seat;
+import com.example.CinemaCity.Entities.Ticket;
 import com.example.CinemaCity.Services.TicketService;
 import com.example.CinemaCity.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,13 @@ public class UserController {
     public ResponseEntity<String> viewFreeSeatsByMovie(@PathVariable Long id) {
         List<SeatResponseDTO> seats = userService.viewFreeSeatsByMovie(id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("Locurile disponibile sunt: " + seats);
+    }
 
 
+    @PutMapping("/{id}")
+    public ResponseEntity<String>updateTicket(@PathVariable Long id,@RequestBody TicketRequestDTO ticketRequestDTO){
+       TicketResponseDTO ticket= ticketService.changeTicket(id,ticketRequestDTO);
+       return ResponseEntity.ok("Biletul a fost updatat "+ ticket);
 
     }
 }

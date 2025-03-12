@@ -72,7 +72,7 @@ public class CinemaHallService {
                 SeatResponseDTO seatResponseDTO=new SeatResponseDTO();
                 seatResponseDTO.setNumberOfRow(seat.getSeatRowNumber());
                 seatResponseDTO.setNumberOfColumn(seat.getSeatColumnNumber());
-                seatResponseDTO.setCinemaHallId(cinemaHall.getId());
+                //seatResponseDTO.setCinemaHallId(cinemaHall.getId());
                 return seatResponseDTO;
                 }).collect(Collectors.toList());
 }

@@ -1,5 +1,7 @@
 package com.example.CinemaCity.Dtos;
 
+import com.example.CinemaCity.Entities.Seat;
+
 import java.time.LocalDateTime;
 
 public class TicketResponseDTO {
@@ -7,8 +9,8 @@ public class TicketResponseDTO {
 
     private Long id;
 
-    private Long seatId;
-
+    //private Long seatId;
+    private SeatResponseDTO seat;
     private Long movieId;
 
     private LocalDateTime purchaseDate;
@@ -18,18 +20,19 @@ public class TicketResponseDTO {
     private Long cinemaHallId;
 
     private double price;
+
     public TicketResponseDTO() {
 
     }
 
-    public TicketResponseDTO(Long id, Long seatId, Long movieId, LocalDateTime purchaseDate, LocalDateTime dateAndTime, Long cinemaHallId,double price) {
+    public TicketResponseDTO(Long id,SeatResponseDTO seat, Long movieId, LocalDateTime purchaseDate, LocalDateTime dateAndTime, Long cinemaHallId, double price) {
         this.id = id;
-        this.seatId = seatId;
+        this.seat=seat;
         this.movieId = movieId;
         this.purchaseDate = purchaseDate;
         this.dateAndTime = dateAndTime;
         this.cinemaHallId = cinemaHallId;
-        this.price=price;
+        this.price = price;
     }
 
     public Long getId() {
@@ -40,12 +43,12 @@ public class TicketResponseDTO {
         this.id = id;
     }
 
-    public Long getSeatId() {
-        return seatId;
+    public SeatResponseDTO getSeat() {
+        return seat;
     }
 
-    public void setSeatId(Long seatId) {
-        this.seatId = seatId;
+    public void setSeatResponseDTO(SeatResponseDTO seat) {
+        this.seat = seat;
     }
 
     public Long getMovieId() {
@@ -86,5 +89,18 @@ public class TicketResponseDTO {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "id=" + id +
+                ", seat=" + seat +
+                ", movieId=" + movieId +
+                ", purchaseDate=" + purchaseDate +
+                ", dateAndTime=" + dateAndTime +
+                ", cinemaHallId=" + cinemaHallId +
+                ", price=" + price +
+                '}';
     }
 }
