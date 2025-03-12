@@ -6,7 +6,6 @@ import com.example.CinemaCity.Entities.ExtraRowPrice;
 import com.example.CinemaCity.Entities.Seat;
 import com.example.CinemaCity.Exceptions.ResourceNotFoundException;
 import com.example.CinemaCity.Repositories.CinemaHallRepository;
-import com.example.CinemaCity.Repositories.SeatRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -72,7 +71,7 @@ public class CinemaHallService {
                 SeatResponseDTO seatResponseDTO=new SeatResponseDTO();
                 seatResponseDTO.setNumberOfRow(seat.getSeatRowNumber());
                 seatResponseDTO.setNumberOfColumn(seat.getSeatColumnNumber());
-                seatResponseDTO.setCinemaHallId(cinemaHall.getId());
+                //seatResponseDTO.setCinemaHallId(cinemaHall.getId());
                 return seatResponseDTO;
                 }).collect(Collectors.toList());
 }

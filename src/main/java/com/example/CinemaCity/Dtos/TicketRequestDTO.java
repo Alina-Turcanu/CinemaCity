@@ -4,18 +4,25 @@ import java.time.LocalDateTime;
 
 public class TicketRequestDTO {
 
+    private Long userId;
     private Long movieId;
     private Long seatId;
-    private Long userId;
-
     private LocalDateTime dateAndTime;
 
 
-    public TicketRequestDTO(Long movieId, Long seatId, Long userId,LocalDateTime dateAndTime) {
+    public TicketRequestDTO(Long userId,Long movieId, Long seatId,LocalDateTime dateAndTime) {
         this.movieId = movieId;
         this.seatId = seatId;
-        this.userId = userId;
         this.dateAndTime=dateAndTime;
+        this.userId=userId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Long getMovieId() {
@@ -32,14 +39,6 @@ public class TicketRequestDTO {
 
     public void setSeatId(Long seatId) {
         this.seatId = seatId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public LocalDateTime getDateAndTime() {

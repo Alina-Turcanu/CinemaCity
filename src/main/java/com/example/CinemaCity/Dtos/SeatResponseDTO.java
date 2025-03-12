@@ -2,29 +2,19 @@ package com.example.CinemaCity.Dtos;
 
 public class SeatResponseDTO {
 
-    private Long id;
     private int numberOfRow;         // Rândul scaunului
     private int numberOfColumn;      // Coloana scaunului
 
     private Long cinemaHallId;
+
     public SeatResponseDTO() {
 
     }
 
-    public SeatResponseDTO(Long id,int numberofRow, int numberOfColumn,Long cinemaHallId) {
-        this.id=id;
+    public SeatResponseDTO(int numberofRow, int numberOfColumn) {
         this.numberOfRow = numberofRow;
         this.numberOfColumn = numberOfColumn;
-        this.cinemaHallId=cinemaHallId;
-    }
 
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public int getNumberOfRow() {
@@ -43,21 +33,12 @@ public class SeatResponseDTO {
         this.numberOfColumn = numberOfColumn;
     }
 
-    public Long getCinemaHallId() {
-        return cinemaHallId;
-    }
-
-    public void setCinemaHallId(Long cinemaHallId) {
-        this.cinemaHallId = cinemaHallId;
-    }
 
     @Override
     public String toString() {
-        return "SeatResponseDTO{" +
-                "id=" + id +
+        return "Seat{" +
                 ", numberOfRow=" + numberOfRow +
                 ", numberOfColumn=" + numberOfColumn +
-                ", cinemaHallId=" + cinemaHallId +
                 '}';
     }
 }
